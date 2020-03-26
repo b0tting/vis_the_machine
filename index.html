@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="vis.js parsing qpu descriptions">
+    <meta name="author" content="Mark">
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+            integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"
+            integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+            crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"
+            integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+            crossorigin="anonymous"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-util@latest"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-data@latest"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network@latest/peer/umd/vis-network.min.js"></script>
+    <script type="text/javascript" src="./js/vismachine.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+    <link rel="stylesheet" type="text/css" href="https://unpkg.com/vis-network/styles/vis-network.min.css"/>
+    <link rel="stylesheet" type="text/css" href="./css/vismachine.css"/>
+</head>
+<body onload="draw()">
+
+<!--
+HAaaaaii. Alks je
+
+
+
+-->
+
+<div class="position-relative m-md-3 text-center">
+    <div class="col-md-5 mx-auto">
+        <img src="logo.png">
+        <p class="lead font-weight-normal">A visualizer for QPU system descriptions</p>
+    </div>
+</div>
+
+<div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+    <div class="text-center text-white">
+        <div class="my-3">
+            <h2 class="display-5">QPU Program</h2>
+            <p class="lead">Paste your system description in here, hammer the button when done</p>
+            <p>
+                <input type="checkbox" id="showAttack">Show brute force vectors<br>
+                <button onclick="draw()">THE BUTTON</button>
+                <br><br>
+                <textarea id="hack_descriptor">
+Port 1(1 QPU):
+- Initial connect
+- Connect to port 2
+- Redirect up to 1 QPU from port 1 to port 2
+- Add 1 node to Trace Route 1
+- Download data
+
+Port 2 (0 QPU):
+- Connect to port 1
+- Brute Force Tracing System 1, 7 damage, costs 2 QPU linked to port 2
+- Link 1 QPU to port 2
+- Download data
+</textarea>
+
+            </p>
+        </div>
+    </div>
+
+    <div class="text-center">
+        <div class="my-3">
+            <h2 class="display-5">Graph</h2>
+            <p class="lead">Drag and pull, zoom with mouse wheel</p>
+            <div class="viscanvas" id="mynetwork"></div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
