@@ -27,26 +27,35 @@
 <body onload="draw()">
 
 <!--
-HAaaaaii. Alks je
+HAaaaaii. Als je hier komt, loop dan meteen door naar https://github.com/b0tting/vis_the_machine.git
 
-
+Schiet gerust een issue of pull request in als je een verbetervoorstel hebt, ik hobby liever met maten dan met mate.
+Ik heb een CSS held nodig!
 
 -->
-
 <div class="position-relative m-md-3 text-center">
     <div class="col-md-5 mx-auto">
-        <img src="logo.png">
+        <img src="logo.png" alt="Hack from the Damn">
         <p class="lead font-weight-normal">A visualizer for QPU system descriptions</p>
     </div>
 </div>
 
 <div class="d-md-flex flex-md-equal w-100 my-md-3 pl-md-3">
+
+    <div class="text-center">
+        <div class="my-3">
+            <h2 class="display-5">Graph</h2>
+            <p class="lead">Drag and pull, zoom with mouse wheel</p>
+            <div class="viscanvas" id="mynetwork"></div>
+        </div>
+    </div>
     <div class="text-center text-white">
         <div class="my-3">
             <h2 class="display-5">QPU Program</h2>
-            <p class="lead">Paste your system description in here, hammer the button when done</p>
-            <p>
-                <input type="checkbox" id="showAttack">Show brute force vectors<br>
+            <p class="lead">Paste your system description in here, hammer the button when done.
+            <label for="showAttack" class="checkboxtext"><br>Show brute force vectors: </label><input type="checkbox" id="showAttack">
+            </p>
+
                 <button onclick="draw()">THE BUTTON</button>
                 <br><br>
                 <textarea id="hack_descriptor">
@@ -63,18 +72,10 @@ Port 2 (0 QPU):
 - Link 1 QPU to port 2
 - Download data
 </textarea>
-
-            </p>
         </div>
     </div>
 
-    <div class="text-center">
-        <div class="my-3">
-            <h2 class="display-5">Graph</h2>
-            <p class="lead">Drag and pull, zoom with mouse wheel</p>
-            <div class="viscanvas" id="mynetwork"></div>
-        </div>
-    </div>
+
 </div>
 
 </body>

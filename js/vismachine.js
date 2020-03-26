@@ -46,7 +46,8 @@
         var last_port = false
         var show_attack = document.getElementById("showAttack").checked
 
-        // This is all setup code for the nodes and the lines ("edges") between them
+        // This is all setup code for the nodes and the lines ("edges") between them. After this is done
+        // we end with a collection of nodes including an id and a collection of edges which link these nodes.
         for(var i = 0;i < hack_text.length;i++){
             // Notice the single =. I too, like to live dangerously
             if(tag=hack_text[i].match(node_regex)) {
@@ -82,8 +83,10 @@
                       width: 1,
                       color: "DarkGray"
                 })
+            // Nodes with data get a datastore icon
             } else if(hack_text[i].match("Download data")) {
                 last_port.group = "dbnodes"
+            // And finally, nodes that can attack get an optional red arrow
             } else if(show_attack && (tag = hack_text[i].match(attack_regex))) {
                 edge_setup = {from: last_port.id,
                         to: tag[1],
@@ -102,7 +105,6 @@
         }
 
         var vis_nodes = new vis.DataSet(nodes);
-        console.log(connections)
         var vis_edges = new vis.DataSet(connections);
 
       // create a network
