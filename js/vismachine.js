@@ -21,6 +21,16 @@
               color: 'White'
             }
           },
+          security: {
+            font: '14px monospace white',
+            shape: 'icon',
+            icon: {
+              face: 'FontAwesome',
+              code: '\uf028',
+              size: 50,
+              color: 'red'
+            }
+          },
           initial: {
             font: '14px monospace white',
             shape: 'icon',
@@ -34,6 +44,20 @@
         }
       };
 
+    function get_link(from, to) {
+        edge_setup = {from: from,
+                    to: to,
+                    selectionWidth: 0,
+                    chosen: false,
+                    arrows: {
+                        to: {enabled: true,type: 'arrow'}
+                      },
+                      width: 1,
+                      color: "blue"
+                }
+        return edge_setup
+    }
+
     function draw() {
         hack_text = document.getElementById("hack_descriptor").value.split('\n');
 
@@ -43,8 +67,11 @@
         var connection_regex = /Connect to port ([0-9]+)/
         var thin_connection_regex = /can only connect one user per tick/
         var attack_regex = /Brute force [A-Za-z]+ system ([0-9]+)/i
+        var link_regex = /Link ([0-9]+) QPU to port ([0-9]+)/i
+        var redirect_regex = /Redirect up to ([0-9]+) QPU from port ([0-9]+) to port ([0-9]+)/i
         var last_port = false
         var show_attack = document.getElementById("showAttack").checked
+        var show_links = document.getElementById("showLinks").checked
 
         // This is all setup code for the nodes and the lines ("edges") between them. After this is done
         // we end with a collection of nodes including an id and a collection of edges which link these nodes.
@@ -58,45 +85,47 @@
                 last_port = {id: tag[1], label: "Port " + tag[1], group: "ainodes"}
             // This matches the "Connect to port" line
             } else if((tag=hack_text[i].match(connection_regex)) && last_port) {
-                edge_setup = {from: last_port.id,
-                    to: tag[1],
-                    arrows: {
-                        to: {enabled: true,type: 'arrow'}
-                      },
-                      width: 3,
-                      color: "LightGray"
-                }
-                // This matches the "Connect to port (can only connect one)" line
+                edge_setup = get_link(last_port.id, tag[1])
+                edge_setup.color = "LightGray"
+                edge_setup.width = 3
                 if(hack_text[i].match(thin_connection_regex)) {
                     edge_setup.width = 1
                     edge_setup.color = "DimGray"
                 }
-
+                // This matches the "Connect to port (can only connect one)" line
                 connections.push(edge_setup)
             // And this matches the entry point
             } else if(hack_text[i].match("Initial connect")) {
-                connections.push({from: 0,
-                    to: last_port.id,
-                    arrows: {
-                        to: {enabled: true,type: 'arrow'}
-                      },
-                      width: 1,
-                      color: "DarkGray"
-                })
+                edge_setup = get_link(0,last_port.id)
+                edge_setup.color = "DarkGray"
+                connections.push(edge_setup)
             // Nodes with data get a datastore icon
             } else if(hack_text[i].match("Download data")) {
                 last_port.group = "dbnodes"
             // And finally, nodes that can attack get an optional red arrow
             } else if(show_attack && (tag = hack_text[i].match(attack_regex))) {
-                edge_setup = {from: last_port.id,
-                        to: tag[1],
-                        arrows: {
-                            to: {enabled: true,type: 'arrow'}
-                          },
-                          width: 1,
-                          color: "red"
-                    }
+                id = 100 + tag  // Let's start security systems at 1
+                exists = nodes.find(  node=> node.id === id )
+                if(!exists){
+                     nodes.push({id: id, label: "Security " + tag[1], group: "security"})
+                }
+                edge_setup = get_link(last_port.id,id)
+                edge_setup.color = "red"
                 connections.push(edge_setup)
+            // And finally, finally, put down blue power lines
+            } else if(show_links) {
+              if (tag = hack_text[i].match(link_regex)) {
+                edge_setup = get_link(last_port.id, tag[2])
+                edge_setup.title = tag[1] + " QPU growth"
+                edge_setup.width = tag[1]
+                connections.push(edge_setup)
+              } else if(tag = hack_text[i].match(redirect_regex)) {
+                edge_setup = get_link(last_port.id, tag[3])
+                  // IF the power is taken from another nodes, comment on that
+                edge_setup.title = tag[1] + " QPU taken from " + tag[2]
+                edge_setup.width = tag[1]
+                connections.push(edge_setup)
+              }
             }
         }
         // Don't forget to add the last port!
