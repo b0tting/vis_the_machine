@@ -122,7 +122,7 @@
               } else if(tag = hack_text[i].match(redirect_regex)) {
                 edge_setup = get_link(last_port.id, tag[3])
                   // IF the power is taken from another nodes, comment on that
-                edge_setup.title = tag[1] + " QPU taken from " + tag[2]
+                edge_setup.title = tag[1] + " QPU taken from port " + tag[2]
                 edge_setup.width = tag[1]
                 connections.push(edge_setup)
               }
