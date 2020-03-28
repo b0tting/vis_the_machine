@@ -108,7 +108,7 @@
                 last_port.group = "dbnodes"
             // And finally, nodes that can attack get an optional red arrow
             } else if(show_attack && (tag = hack_text[i].match(attack_regex))) {
-                id = 100 + tag  // Let's start security systems at 1
+                id = 100 + tag[1]  // Let's start security systems at 1
                 exists = nodes.find(  node=> node.id === id )
                 if(!exists){
                      nodes.push({id: id, label: "Security " + tag[1], group: "security"})
