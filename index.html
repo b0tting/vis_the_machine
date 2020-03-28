@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="vis.js parsing qpu descriptions">
     <meta name="author" content="Mark">
+    <title>QC ViS</title>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
             integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
             crossorigin="anonymous"></script>
@@ -29,14 +30,14 @@
 <!--
 HAaaaaii. Als je hier komt, loop dan meteen door naar https://github.com/b0tting/vis_the_machine.git
 
-Schiet gerust een issue of pull request in als je een verbetervoorstel hebt, ik hobby liever met maten dan met mate.
+Schiet gerust een issue of pull request in als je een verbeter voorstel hebt, ik hobby liever met maten dan met mate.
 Ik heb een CSS held nodig!
 
 -->
 <div class="position-relative m-md-3 text-center">
-    <div class="col-md-5 mx-auto">
+    <div class="col-md-5 mx-auto text-center">
         <img src="logo.png" alt="Hack from the Damn">
-        <p class="lead font-weight-normal">A visualizer for QPU system descriptions</p>
+        <p class="lead font-weight-normal">A visualizer for Quantum computer descriptions</p>
     </div>
 </div>
 
@@ -51,10 +52,11 @@ Ik heb een CSS held nodig!
     </div>
     <div class="text-center text-white">
         <div class="my-3">
-            <h2 class="display-5">QPU Program</h2>
-            <p class="lead">Paste your system description in here, hammer the button when done.
+            <h2 class="display-5">QC Scan result</h2>
+            <p class="lead">Paste your system scan result in here, <br>hammer the button when done.
+            <label for="showConnect" class="checkboxtext"><br>Show port connects: </label><input type="checkbox" id="showConnect" checked>
             <label for="showAttack" class="checkboxtext"><br>Show brute force vectors: </label><input type="checkbox" id="showAttack">
-            <label for="showLinks" class="checkboxtext"><br>Show link vectors: </label><input type="checkbox" id="showLinks">
+            <label for="showLinks" class="checkboxtext"><br>Show QPU link vectors: </label><input type="checkbox" id="showLinks">
             </p>
                 <button onclick="draw()">THE BUTTON</button>
                 <br><br>

@@ -44,16 +44,17 @@
         }
       };
 
-    function get_link(from, to) {
+    function get_link(from, to, title) {
         edge_setup = {from: from,
                     to: to,
                     selectionWidth: 0,
                     chosen: false,
                     arrows: {
                         to: {enabled: true,type: 'arrow'}
-                      },
-                      width: 1,
-                      color: "blue"
+                    },
+                    width: 1,
+                    color: "blue",
+                    title: title
                 }
         return edge_setup
     }
@@ -66,12 +67,13 @@
         var connections = []
         var connection_regex = /Connect to port ([0-9]+)/
         var thin_connection_regex = /can only connect one user per tick/
-        var attack_regex = /Brute force [A-Za-z]+ system ([0-9]+)/i
-        var link_regex = /Link ([0-9]+) QPU to port ([0-9]+)/i
-        var redirect_regex = /Redirect up to ([0-9]+) QPU from port ([0-9]+) to port ([0-9]+)/i
+        var attack_regex = /Brute force [A-Za-z]+ system ([0-9]+).*/i
+        var link_regex = /Link ([0-9]+) QPU to port ([0-9]+).*/i
+        var redirect_regex = /Redirect up to ([0-9]+) QPU from port ([0-9]+) to port ([0-9]+).*/i
         var last_port = false
         var show_attack = document.getElementById("showAttack").checked
         var show_links = document.getElementById("showLinks").checked
+        var show_connects = document.getElementById("showConnect").checked
 
         // This is all setup code for the nodes and the lines ("edges") between them. After this is done
         // we end with a collection of nodes including an id and a collection of edges which link these nodes.
@@ -84,15 +86,17 @@
                 }
                 last_port = {id: tag[1], label: "Port " + tag[1], group: "ainodes"}
             // This matches the "Connect to port" line
-            } else if((tag=hack_text[i].match(connection_regex)) && last_port) {
-                edge_setup = get_link(last_port.id, tag[1])
+            } else if((tag=hack_text[i].match(connection_regex)) && last_port && show_connects) {
+                edge_setup = get_link(last_port.id, tag[1], tag[0])
                 edge_setup.color = "LightGray"
                 edge_setup.width = 3
+
+                // This matches the "Connect to port (can only connect one)" line
                 if(hack_text[i].match(thin_connection_regex)) {
                     edge_setup.width = 1
                     edge_setup.color = "DimGray"
                 }
-                // This matches the "Connect to port (can only connect one)" line
+
                 connections.push(edge_setup)
             // And this matches the entry point
             } else if(hack_text[i].match("Initial connect")) {
@@ -109,20 +113,18 @@
                 if(!exists){
                      nodes.push({id: id, label: "Security " + tag[1], group: "security"})
                 }
-                edge_setup = get_link(last_port.id,id)
+                edge_setup = get_link(last_port.id,id, tag[0])
                 edge_setup.color = "red"
                 connections.push(edge_setup)
             // And finally, finally, put down blue power lines
             } else if(show_links) {
               if (tag = hack_text[i].match(link_regex)) {
-                edge_setup = get_link(last_port.id, tag[2])
-                edge_setup.title = tag[1] + " QPU growth"
+                edge_setup = get_link(last_port.id, tag[2], tag[0])
                 edge_setup.width = tag[1]
                 connections.push(edge_setup)
               } else if(tag = hack_text[i].match(redirect_regex)) {
-                edge_setup = get_link(last_port.id, tag[3])
+                edge_setup = get_link(last_port.id, tag[3], tag[0])
                   // IF the power is taken from another nodes, comment on that
-                edge_setup.title = tag[1] + " QPU taken from port " + tag[2]
                 edge_setup.width = tag[1]
                 connections.push(edge_setup)
               }
