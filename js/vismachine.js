@@ -59,21 +59,42 @@
         return edge_setup
     }
 
+    function extract_systems(bf_line) {
+      // - Brute force security system 1, 2 and 3, 1 damage, costs 1 QPU linked to port 3
+      // REGEX HEROES OF THE INTERNET, PLZ HALP!
+      var dmg_regex = /, [0-9]+ damage/i
+
+      systems_regex = /(\d,(\d)|\d and(\d)|\d)/g
+      var security_systems = []
+      var match = dmg_regex.exec(bf_line);
+      if (match) {
+          bfss = bf_line.substring(0, match.index);
+          numbers = bfss.matchAll(systems_regex)
+          for(numb of numbers) {
+            security_systems.push(numb[0])
+          }
+      }
+      return security_systems
+    }
+
     function draw() {
         hack_text = document.getElementById("hack_descriptor").value.split('\n');
-
-        var nodes = [{id: 0, label: "Initial connect", group: "initial"}]
-        var node_regex = /^Port ([0-9]+)/;
         var connections = []
+
+        var node_regex = /^Port ([0-9]+)/;
         var connection_regex = /Connect to port ([0-9]+)/
         var thin_connection_regex = /can only connect one user per tick/
-        var attack_regex = /Brute force [A-Za-z]+ system ([0-9]+).*/i
+        var attack_regex = /Brute force ([A-Za-z]+) system ([0-9]+).*/i
         var link_regex = /Link ([0-9]+) QPU to port ([0-9]+).*/i
         var redirect_regex = /Redirect up to ([0-9]+) QPU from port ([0-9]+) to port ([0-9]+).*/i
-        var last_port = false
+
+
         var show_attack = document.getElementById("showAttack").checked
         var show_links = document.getElementById("showLinks").checked
         var show_connects = document.getElementById("showConnect").checked
+
+        var last_port = false
+        var nodes = [{id: 0, label: "Initial connect", group: "initial"}]
 
         // This is all setup code for the nodes and the lines ("edges") between them. After this is done
         // we end with a collection of nodes including an id and a collection of edges which link these nodes.
@@ -108,14 +129,18 @@
                 last_port.group = "dbnodes"
             // And finally, nodes that can attack get an optional red arrow
             } else if(show_attack && (tag = hack_text[i].match(attack_regex))) {
-                id = 100 + tag[1]  // Let's start security systems at 1
-                exists = nodes.find(  node=> node.id === id )
-                if(!exists){
-                     nodes.push({id: id, label: "Security " + tag[1], group: "security"})
+                security_systems = extract_systems(tag[0])
+                for(secu_sys of security_systems) {
+                  id = tag[1] + secu_sys
+                  exists = nodes.find( node=> node.id === id )
+                  if(!exists){
+                       nodes.push({id: id, label: tag[1] + " " + secu_sys, group: "security"})
+                  }
+                  edge_setup = get_link(last_port.id,id, tag[0])
+                  edge_setup.color = "red"
+                  connections.push(edge_setup)
                 }
-                edge_setup = get_link(last_port.id,id, tag[0])
-                edge_setup.color = "red"
-                connections.push(edge_setup)
+
             // And finally, finally, put down blue power lines
             } else if(show_links) {
               if (tag = hack_text[i].match(link_regex)) {
